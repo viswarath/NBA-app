@@ -1,0 +1,62 @@
+# NBA Stats App
+
+## Overview
+
+The **NBA Stats App** is a web application that provides detailed statistics for NBA players, teams, and games from the 2023 season. The app allows users to view data in a table format, as well as add and delete data entries for players, teams, and games.
+
+The app is built using a **FastAPI** backend with a **PostgreSQL** database, and a **React** frontend with **TypeScript** and **Material-UI (MUI)** for styling. It is designed to run locally only, as specified in the project requirements.
+
+---
+
+## Tech Stack
+
+- **Backend**:
+  - **FastAPI** (for building the API)
+  - **PostgreSQL** (database)
+  - **SQL** (pure SQL for data management)
+  - **Uvicorn** (ASGI server)
+
+- **Frontend**:
+  - **React** (UI framework)
+  - **TypeScript** (for type safety)
+  - **Material-UI** (MUI for design components)
+  - **Yarn** (for package management)
+
+---
+
+## Features
+
+- **View NBA Stats**:
+  - Displays a table of NBA players, teams, and games for the 2023 season.
+  - Players' statistics include points, assists, rebounds, and other key metrics.
+  - Game data includes scores, date, and participating teams.
+  - Teams' information includes roster and performance metrics.
+
+- **Add and Delete Data**:
+  - Users can add new NBA players, games, and teams to the database.
+  - Users can also delete existing data from the database.
+
+---
+
+## Prerequisites
+
+Before running the app, ensure the following tools are installed:
+
+- **Python 3.8+** (for backend)
+- **Node.js** and **Yarn** (for frontend)
+- **PostgreSQL** (database server)
+- **Postman** or similar tool for testing API endpoints (optional)
+
+---
+
+## Setup Instructions
+
+### 1. Set up the Backend (FastAPI with PostgreSQL)
+
+#### Step 1: Clone the repository
+
+Clone the project from GitHub:
+```
+git clone https://github.com/yourusername/nba_stats.git
+cd nba_stats
+```
