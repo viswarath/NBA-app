@@ -56,7 +56,15 @@ Before running the app, ensure the following tools are installed:
 #### Step 1: Clone the repository
 
 Clone the project from GitHub:
-```
-git clone https://github.com/yourusername/nba_stats.git
-cd nba_stats
-```
+
+#### Step 2: Install proper things
+
+##### Frontend:
+- yarn and node
+- run `yarn add` in the `\nba_stats`
+
+##### Backend:
+- Activate python virual environment: `source venv/bin/activate`
+- fastapi and uvicorn
+- run `pip install -r requirements.txt`
+  
