@@ -60,11 +60,14 @@ Clone the project from GitHub:
 #### Step 2: Install proper things
 
 ##### Frontend:
-- yarn and node
+- Install Yarn and node (nvm)
 - run `yarn add` in the `\nba_stats`
 
 ##### Backend:
-- Activate python virual environment: `source venv/bin/activate`
-- fastapi and uvicorn
-- run `pip install -r requirements.txt`
+- Activate python virual environment:
+```
+python3 -m venv venv 
+source venv/bin/activate 
+```
+- Run `pip install -r requirements.txt` fastapi and uvicorn
   
