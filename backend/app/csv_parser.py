@@ -1,18 +1,140 @@
 import csv
 from app.database import PgDatabase
 
-csv_file_path = "stats.csv"
-import os
+csv_players_path = "stats.csv"
+csv_teams_path = "teams.csv"
+csv_schedule_path = "schedule.csv"
+
+
+import csv
+
+# Function to insert team data from CSV
+def insert_team_data_from_csv():
+    
+    # Connect to the database
+    with PgDatabase() as db:
+        count = 0  # This will be used to generate unique IDs
+        with open(csv_teams_path, 'r', newline='', encoding='utf-8') as file:
+            csv_reader = csv.DictReader(file) 
+            
+           
+            for row in csv_reader:
+                print(count)
+                team_id = row['Team'] 
+                
+                # Insert into the team table
+                db.cursor.execute(f"""
+                    INSERT INTO team (team_id, div_name, div_place, conf_name, conf_place)
+                    VALUES (%s, %s, %s, %s, %s);
+                """, (team_id, None, None, None, None))
+
+
+                # Insert into the movement table (e.g., based on pace and age)
+                movement_id = count
+                db.cursor.execute(f"""
+                    INSERT INTO movement (movement_id, team_id, pace, age)
+                    VALUES (%s, %s, %s, %s);
+                """, (
+                    movement_id,
+                    team_id,
+                    float(row['Pace']),
+                    float(row['Age'])
+                ))
+
+                # Insert into the schedule_strength table (SOS and SRS)
+                strength_id = count
+                db.cursor.execute(f"""
+                    INSERT INTO schedule_strength (strength_id, team_id, SOS, SRS)
+                    VALUES (%s, %s, %s, %s);
+                """, (
+                    strength_id,
+                    team_id,
+                    float(row['SOS']),
+                    float(row['SRS'])
+                ))
+
+                # Insert into the record table (wins, losses, margin of victory)
+                record_id = count
+                db.cursor.execute(f"""
+                    INSERT INTO record (record_id, team_id, wins, losses, margin_of_victory, PW, PL)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s);
+                """, (
+                    record_id,
+                    team_id,
+                    int(row['W']),
+                    int(row['L']),
+                    float(row['MOV▲']),
+                    int(row['PW']),
+                    int(row['PL'])
+                ))
+
+                # Insert into the rating table (ORtg, DRtg, NRtg)
+                rating_id = count
+                db.cursor.execute(f"""
+                    INSERT INTO rating (rating_id, team_id, ORTG, DRTg, NRTg)
+                    VALUES (%s, %s, %s, %s, %s);
+                """, (
+                    rating_id,
+                    team_id,
+                    float(row['ORtg']),
+                    float(row['DRtg']),
+                    float(row['NRtg'])
+                ))
+
+                # Insert into the arena table (Arena and Attendance)
+                arena_name = row['Arena']
+                db.cursor.execute(f"""
+                    INSERT INTO arena (arena_name, arena_attend, arena_attend_game)
+                    VALUES (%s, %s, %s);
+                """, (
+                    arena_name,
+                    int(row['Attend.']),
+                    int(row['Attend./G'])
+                ))
+
+                # Insert into the plays_at table (team plays at arena)
+                db.cursor.execute(f"""
+                    INSERT INTO plays_at (arena_name, team_id)
+                    VALUES (%s, %s);
+                """, (arena_name, team_id))
+
+                count += 1
+            
+        db.connection.commit()
+
+
+
+
+def insert_game_data_from_csv():
+    with PgDatabase() as db:
+        with open(csv_schedule_path, 'r', newline='', encoding='utf-8') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                home_team_id = row['home_team']
+                away_team_id = row['away_team']
+                game_id = int(row['game_id'])
+                game_date = row['game_date']
+                preview_url = row['preview_url']
+                
+                # Insert into the Games table
+                db.cursor.execute("""
+                    INSERT INTO Games (home_team_id, away_team_id, game_id, game_date, link)
+                    VALUES (%s, %s, %s, %s, %s)
+                """, (home_team_id, away_team_id, game_id, game_date, preview_url))
+        
+        db.connection.commit()
+
+
+
 
 def insert_player_data_from_csv():
     count = 0
     with PgDatabase() as db:
-        with open(csv_file_path, 'r', newline='', encoding='utf-8') as file:
+        with open(csv_players_path, 'r', newline='', encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=';')
 
             # Iterate through each row (player data) in the CSV
             for row in reader:
-                print(count)
                 # Extract player data from the row
                 player_id = count
                 name = row['Player']
@@ -48,12 +170,7 @@ def insert_player_data_from_csv():
                 points = float(row['PTS'])
                 
                 count += 1
-                # Insert the team if not exists (simplified logic, add your own conflict handling)
-                db.cursor.execute("""
-                    INSERT INTO team (team_id, div_name, div_place, conf_name, conf_place) 
-                    VALUES (%s, %s, %s, %s, %s)
-                    ON CONFLICT (team_id) DO NOTHING
-                """, (team_id, 'Atlantic', 1, 'Eastern', 1))
+
 
                 # Insert player data
                 db.cursor.execute("""
@@ -95,3 +212,29 @@ def insert_player_data_from_csv():
         # Commit the changes to the database
         db.connection.commit()
         print("Player data inserted successfully.")
+
+
+
+def insert_award_data():
+    # Award data
+    awards = [
+        ("Most Valuable Player (Michael Jordan Trophy)", 163),
+        ("Rookie of the Year (Wilt Chamberlain Trophy)", 25),
+        ("Defensive Player of the Year (Hakeem Olajuwon Trophy)", 267),
+        ("Most Improved Player (George Mikan Trophy)", 349),
+        ("Sixth Man of the Year (John Havlicek Trophy)", 70),
+        ("Clutch Player of the Year (Jerry West Trophy)", 175),
+        ("NBA Hustle Award", 510)
+    ]
+    
+    # Connect to the database
+    with PgDatabase() as db:
+        for award_name, player_id in awards:
+            # Insert each award into the table, leaving player_id as NULL for now
+            db.cursor.execute(f"""
+                INSERT INTO award (name, player_id)
+                VALUES (%s, %s);
+            """, (award_name,player_id))
+        
+        # Commit the transaction
+        db.connection.commit()

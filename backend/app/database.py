@@ -160,9 +160,8 @@ def create_tables():
         # Create Award table
         db.cursor.execute(f"""
             CREATE TABLE {award} (
-                award_id INT PRIMARY KEY,
+                name VARCHAR(255) PRIMARY KEY,
                 player_id INT,
-                name VARCHAR(255),
                 FOREIGN KEY (player_id) REFERENCES {player}(player_id)
             );
         """)
@@ -271,17 +270,11 @@ def create_tables():
             CREATE TABLE {team_stats} (
                 team_id CHAR(3) PRIMARY KEY,
                 games_played INT,
-                free_throw_stats_id INT,
-                shoot_stats_id INT,
-                other_stats_id INT,
                 movement_id INT,
                 strength_id INT,
                 record_id INT,
                 rating_id INT,
                 FOREIGN KEY (team_id) REFERENCES {team}(team_id),
-                FOREIGN KEY (free_throw_stats_id) REFERENCES {free_throw_stats}(free_throw_stats_id),
-                FOREIGN KEY (shoot_stats_id) REFERENCES {shoot_stats}(shoot_stats_id),
-                FOREIGN KEY (other_stats_id) REFERENCES {other_stats}(other_stats_id),
                 FOREIGN KEY (movement_id) REFERENCES {movement}(movement_id),
                 FOREIGN KEY (strength_id) REFERENCES {schedule_strength}(strength_id),
                 FOREIGN KEY (record_id) REFERENCES {record}(record_id),

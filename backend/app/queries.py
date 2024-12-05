@@ -3,24 +3,28 @@ from app.database import PgDatabase
 
 def get_player_by_name(name: str) -> dict:
     with PgDatabase() as db:
-        query = f"""
-        SELECT player_id, team_id, name, age, position, games_started
-        FROM player
-        where player_id = {name};
+        query = """
+            SELECT player_id, team_id, name, age, position, games_started
+            FROM player
+            WHERE name ILIKE %s;
         """
-        
-        db.cursor.execute(query)
-        result = db.cursor.fetchall()  
+
+        db.cursor.execute(query, (name + '%',))
+        result = db.cursor.fetchall()
+        print(result)
         
         if result:
-            player_info = {
-                "player_id": result[0][0],
-                "team_id": result[0][1],
-                "name": result[0][2],
-                "age": result[0][3],
-                "position": result[0][4],
-                "games_started": result[0][5],
-            }
-            return player_info
+            players_info = [
+                {
+                    "player_id": row[0],
+                    "team_id": row[1],
+                    "name": row[2],
+                    "age": row[3],
+                    "position": row[4],
+                    "games_started": row[5],
+                }
+                for row in result
+            ]
+            return players_info
         else:
             return None
