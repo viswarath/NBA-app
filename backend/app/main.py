@@ -1,12 +1,25 @@
-from fastapi import FastAPI, status
-from fastapi.exceptions import HTTPException 
+from fastapi import FastAPI, status, Query # type: ignore
+from fastapi.exceptions import HTTPException  # type: ignore
 from typing import List, Optional
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 
 from app.database import create_tables, drop_tables
-from app.queries import get_player_by_name
+from app.queries import get_player_by_name, get_all_players
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
+
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get('/')
@@ -32,12 +45,14 @@ async def initdb():
             detail=f"Error {e}"
         )
 
-@app.get('/players/{name}', response_model=List[dict])
-async def get_player(name: str) -> List[dict]:
+@app.get('/players', response_model=List[dict])
+async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[dict]:
     try:
-        # Call the function to fetch players by name from the database
-        player_info = get_player_by_name(name)
-                
+        if name: 
+            player_info = get_player_by_name(name)  # Function to fetch a player by name
+        else: 
+            player_info = get_all_players()  # Function to fetch all players
+        
         if player_info:
             return player_info
         else:
@@ -48,5 +63,5 @@ async def get_player(name: str) -> List[dict]:
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Error {e}"
+            detail=f"Error: {e}"
         )
