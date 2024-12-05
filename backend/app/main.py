@@ -2,7 +2,8 @@ from fastapi import FastAPI, status
 from fastapi.exceptions import HTTPException 
 
 from app.database import create_tables, drop_tables
-
+from app.queries import get_player_by_name
+from app.csv_parser import insert_player_data_from_csv
 app = FastAPI()
 
 
@@ -16,7 +17,9 @@ async def index():
 async def initdb():
     try:
         drop_tables()
+        print("Done")
         create_tables()
+        insert_player_data_from_csv()
         return {"message": "Tables ; and created!"}
     except Exception as e:
         raise HTTPException(
@@ -28,8 +31,8 @@ async def initdb():
 async def get_player(name: str) -> dict:
     try:
         # Call the function to fetch player by name from the database
-        player_info = get_player(name)
-        
+        player_info = get_player_by_name(name)
+                
         if player_info:
             return player_info
         else:
