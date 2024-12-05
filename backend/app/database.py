@@ -47,51 +47,240 @@ class PgDatabase(Database):
             database=os.getenv("DB_NAME")
         )
         
+# Table name variables
 player = "player"
+team = "team"
+award = "award"
+player_stats = "player_stats"
+team_stats = "team_stats"
+free_throw_stats = "free_throw_stats"
+shoot_stats = "shoot_stats"
+other_stats = "other_stats"
+movement = "movement"
+schedule_strength = "schedule_strength"
+record = "record"
+rating = "rating"
+arena = "arena"
+plays_at = "plays_at"
+games = "games"
 
+
+
+# Drop Tables Function
 def drop_tables():
     with PgDatabase() as db:
+        db.cursor.execute(f"DROP TABLE IF EXISTS {games} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {plays_at} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {arena} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {rating} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {record} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {schedule_strength} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {movement} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {other_stats} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {shoot_stats} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {free_throw_stats} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {team_stats} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {player_stats} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {award} CASCADE;")
         db.cursor.execute(f"DROP TABLE IF EXISTS {player} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {team} CASCADE;")    
+           
         db.connection.commit()
         print("Tables are dropped...")
 
 def create_tables():
     with PgDatabase() as db:
-        db.cursor.execute(f"""CREATE TABLE {player} (
+        
+        # Create Team table
+        db.cursor.execute(f"""
+            CREATE TABLE {team} (
+                team_id CHAR(3) PRIMARY KEY,
+                div_name VARCHAR(255),
+                div_place INT,
+                conf_name VARCHAR(255),
+                conf_place INT
+            );
+        """)
+        
+        # Create Other_Stats table
+        db.cursor.execute(f"""
+            CREATE TABLE {other_stats} (
+                other_stats_id INT PRIMARY KEY,
+                ORB INT,
+                DRB INT,
+                TRB INT,
+                AST INT,
+                STL INT,
+                BLK INT,
+                TOV INT,
+                PF INT
+            );
+        """)
+        
+        # Create Shoot_Stats table
+        db.cursor.execute(f"""
+            CREATE TABLE {shoot_stats} (
+                shoot_stats_id INT PRIMARY KEY,
+                FG INT,
+                FGA INT,
+                FG_Perc DECIMAL(5,2),
+                three_point INT,
+                three_point_attempted INT,
+                three_point_perctange DECIMAL(5,2),
+                two_point INT,
+                two_point_attempted INT,
+                two_point_percentage DECIMAL(5,2),
+                eFG_Perc DECIMAL(5,2)
+            );
+        """)
+        
+        # Create Free_Throw_Stats table
+        db.cursor.execute(f"""
+            CREATE TABLE {free_throw_stats} (
+                free_throw_stats_id INT PRIMARY KEY,
+                FTA INT,
+                FT INT,
+                FT_Perc DECIMAL(5, 3)
+            );
+        """)
+
+        # Create Player table
+        db.cursor.execute(f"""
+            CREATE TABLE {player} (
                 player_id INT PRIMARY KEY,
                 team_id CHAR(3), 
                 name VARCHAR(255),
                 age INT,
                 position VARCHAR(255),
                 games_started INT,
-                rank INT
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id)
             );
         """)
+
+        # Create Award table
+        db.cursor.execute(f"""
+            CREATE TABLE {award} (
+                name VARCHAR(255) PRIMARY KEY,
+                player_id INT,
+                FOREIGN KEY (player_id) REFERENCES {player}(player_id)
+            );
+        """)
+
+        # Create Movement table
+        db.cursor.execute(f"""
+            CREATE TABLE {movement} (
+                movement_id INT PRIMARY KEY,
+                team_id CHAR(3),
+                pace DECIMAL(5,2),
+                age DECIMAL(5,2),
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id)
+            );
+        """)
+
+        # Create Schedule_Strength table
+        db.cursor.execute(f"""
+            CREATE TABLE {schedule_strength} (
+                strength_id INT PRIMARY KEY,
+                team_id CHAR(3),
+                SOS DECIMAL(5,2),
+                SRS DECIMAL(5,2),
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id)
+            );
+        """)
+
+        # Create Record table
+        db.cursor.execute(f"""
+            CREATE TABLE {record} (
+                record_id INT PRIMARY KEY,
+                team_id CHAR(3),
+                wins INT,
+                losses INT,
+                margin_of_victory DECIMAL(5,2),
+                PW INT,
+                PL INT,
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id)
+            );
+        """)
+
+        # Create Rating table
+        db.cursor.execute(f"""
+            CREATE TABLE {rating} (
+                rating_id INT PRIMARY KEY,
+                team_id CHAR(3),
+                ORTG DECIMAL(5,2), 
+                DRTg DECIMAL(5,2),
+                NRTg DECIMAL(5,2),
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id)
+            );
+        """)
+
+        # Create Arena table
+        db.cursor.execute(f"""
+            CREATE TABLE {arena} (
+                arena_name VARCHAR(255) PRIMARY KEY,
+                arena_attend INT,
+                arena_attend_game INT
+            );
+        """)
+
+        # Create Plays_At table
+        db.cursor.execute(f"""
+            CREATE TABLE {plays_at} (
+                arena_name VARCHAR(255),
+                team_id CHAR(3),
+                PRIMARY KEY (arena_name, team_id),
+                FOREIGN KEY (arena_name) REFERENCES {arena}(arena_name),
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id)
+            );
+        """)
+
+        # Create Games table
+        db.cursor.execute(f"""
+            CREATE TABLE {games} (
+                home_team_id CHAR(3),
+                away_team_id CHAR(3),
+                game_id INT,
+                game_date DATE,
+                link VARCHAR(255),
+                PRIMARY KEY (home_team_id, away_team_id, game_id),
+                FOREIGN KEY (home_team_id) REFERENCES {team}(team_id),
+                FOREIGN KEY (away_team_id) REFERENCES {team}(team_id)
+            );
+        """)
+        
+        
+        # Create Player_Stats table
+        db.cursor.execute(f"""
+            CREATE TABLE {player_stats} (
+                player_id INT PRIMARY KEY,
+                games_played INT,
+                mins_played INT,
+                free_throw_stats_id INT,
+                shoot_stats_id INT,
+                other_stats_id INT,
+                FOREIGN KEY (player_id) REFERENCES {player}(player_id),
+                FOREIGN KEY (free_throw_stats_id) REFERENCES {free_throw_stats}(free_throw_stats_id),
+                FOREIGN KEY (shoot_stats_id) REFERENCES {shoot_stats}(shoot_stats_id),
+                FOREIGN KEY (other_stats_id) REFERENCES {other_stats}(other_stats_id)
+            );
+        """)
+
+        # Create Team_Stats table
+        db.cursor.execute(f"""
+            CREATE TABLE {team_stats} (
+                team_id CHAR(3) PRIMARY KEY,
+                games_played INT,
+                movement_id INT,
+                strength_id INT,
+                record_id INT,
+                rating_id INT,
+                FOREIGN KEY (team_id) REFERENCES {team}(team_id),
+                FOREIGN KEY (movement_id) REFERENCES {movement}(movement_id),
+                FOREIGN KEY (strength_id) REFERENCES {schedule_strength}(strength_id),
+                FOREIGN KEY (record_id) REFERENCES {record}(record_id),
+                FOREIGN KEY (rating_id) REFERENCES {rating}(rating_id)
+            );
+        """)
+
         db.connection.commit()
         print("Tables are created successfully...")
-
-
-def get_player_by_name(name: str) -> dict:
-    with PgDatabase() as db:
-        query = f"""
-        SELECT player_id, team_id, name, age, position, games_started, rank
-        FROM player
-        WHERE name = '{name}';
-        """
-        
-        db.cursor.execute(query)
-        result = db.cursor.fetchone()  
-        
-        if result:
-            player_info = {
-                "player_id": result[0],
-                "team_id": result[1],
-                "name": result[2],
-                "age": result[3],
-                "position": result[4],
-                "games_started": result[5],
-                "rank": result[6]
-            }
-            return player_info
-        else:
-            return None
