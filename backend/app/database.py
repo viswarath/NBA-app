@@ -95,10 +95,10 @@ def create_tables():
         db.cursor.execute(f"""
             CREATE TABLE {team} (
                 team_id CHAR(3) PRIMARY KEY,
-                div_name VARCHAR(255),
-                div_place INT,
-                conf_name VARCHAR(255),
-                conf_place INT
+                name VARCHAR(255),
+                rank INT,
+                wins INT,
+                losses INT
             );
         """)
         
