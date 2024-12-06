@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 
 from app.database import create_tables, drop_tables
-from app.player_queries import get_player_by_name, get_all_players, get_players_by_points
+from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc
 from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games
 from app.game_queries import get_game_by_team_id, get_all_games
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
@@ -69,10 +69,10 @@ async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[d
         )
 
 @app.get('/playerPoints', response_model=List[dict])
-async def get_players_points(points: Optional[int] = Query(None, alias="points")) -> List[dict]:
+async def get_players_points(points: Optional[int] = Query(0, alias="points")) -> List[dict]:
     try:
-        if points: 
-            player_info = get_players_by_points(points)  # Function to fetch a player by points
+        
+        player_info = get_players_by_points(points)  # Function to fetch a player by points
         
         if player_info:
             return player_info
@@ -87,6 +87,43 @@ async def get_players_points(points: Optional[int] = Query(None, alias="points")
             detail=f"Error: {e}"
         )
 
+@app.get('/playerAssists', response_model=List[dict])
+async def get_players_points(assists: Optional[int] = Query(0, alias="assists")) -> List[dict]:
+    try:
+        print(assists)
+        player_info = get_players_by_assists(assists)  # Function to fetch a player by points
+        
+        if player_info:
+            return player_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Players with listed assists not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+@app.get('/playerFTPerc', response_model=List[dict])
+async def get_players_FTPerc(FTPerc: Optional[float] = Query(0, alias="FTPerc")) -> List[dict]:
+    try:
+        print(FTPerc)
+        player_info = get_players_by_FTPerc(FTPerc)  # Function to fetch a player by points
+        
+        if player_info:
+            return player_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Players with listed FT percentage not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
 
 # Team query routes
 
