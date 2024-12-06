@@ -1,17 +1,15 @@
 import React from 'react';
-import { Typography, Stack } from '@mui/material';
-import DataTable from './dataTable';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
+import {MainPage} from './mainPage'
 
+const queryClient = new QueryClient();
 
-
-const App: React.FC = () => {
+export default function App() {
   return (
-    <Stack>
-        <Typography>Welcome Viswa</Typography>
-        <DataTable/>
-    </Stack>
+    <QueryClientProvider client={queryClient}>
+        <MainPage />
+    </QueryClientProvider>
   );
 }
 
-export default App;
