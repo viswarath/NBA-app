@@ -28,7 +28,7 @@ def get_player_by_name(name: str) -> dict:
         else:
             return None
 
-      
+
 
 def get_all_players() -> dict:
     with PgDatabase() as db:
@@ -55,4 +55,3 @@ def get_all_players() -> dict:
             return players_info
         else:
             return None
-        

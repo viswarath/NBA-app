@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 
 from app.database import create_tables, drop_tables
-from app.queries import get_player_by_name, get_all_players
+from app.player_queries import get_player_by_name, get_all_players
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
 
@@ -65,3 +65,4 @@ async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[d
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error: {e}"
         )
+        

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
-import { Stack, TextField, Alert, Skeleton } from '@mui/material';
+import { Stack, TextField, Alert, Skeleton, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
 interface PlayerData {
@@ -20,6 +20,7 @@ const fetchPlayerData = async (name: string) => {
   }
   return response.json();
 };
+
 
 const PlayerDataTable: React.FC = () => {
   const [name, setName] = React.useState<string>('');
@@ -82,6 +83,7 @@ const PlayerDataTable: React.FC = () => {
           />
         )}
       </Paper>
+
     </Stack>
   );
 }
