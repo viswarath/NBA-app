@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 from app.database import create_tables, drop_tables
 from app.player_queries import get_player_by_name, get_all_players, get_players_by_points
-from app.team_queries import get_team_by_name, get_all_teams
+from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games
 from app.game_queries import get_game_by_team_id, get_all_games
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
@@ -111,6 +111,23 @@ async def get_teams(name: Optional[str] = Query(None, alias="name")) -> List[dic
             detail=f"Error: {e}"
         )
 
+@app.get('/teamAwards')
+async def get_team_award_count() -> List[dict]:
+    try:
+        team_award_info = get_num_team_awards()
+        
+        if team_award_info:
+            return team_award_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Team award counts not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
 
 # Game query routes
 
@@ -124,6 +141,24 @@ async def get_teams(team_id: Optional[str] = Query(None, alias="team_id")) -> Li
         
         if game_info:
             return game_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Game not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+@app.get('/roadgames')
+async def get_road_games() -> List[dict]:
+    try:
+        road_game_info = get_num_road_games()
+        
+        if road_game_info:
+            return road_game_info
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
