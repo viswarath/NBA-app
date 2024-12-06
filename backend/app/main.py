@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 from app.database import create_tables, drop_tables
 from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc
-from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games
+from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS
 from app.game_queries import get_game_by_team_id, get_all_games
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
@@ -159,6 +159,24 @@ async def get_team_award_count() -> List[dict]:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Team award counts not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+@app.get('/teamSOS', response_model=List[dict])
+async def get_teamSOS(SOS: Optional[float] = Query(0, alias="SOS")) -> List[dict]:
+    try:
+        team_info = get_teams_by_SOS(SOS)
+        
+        if team_info:
+            return team_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Team SOS not found"
             )
     except Exception as e:
         raise HTTPException(
