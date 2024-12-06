@@ -5,7 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 
 from app.database import create_tables, drop_tables
-from app.player_queries import get_player_by_name, get_all_players
+from app.player_queries import get_player_by_name, get_all_players, get_players_by_points
+from app.team_queries import get_team_by_name, get_all_teams
+from app.game_queries import get_game_by_team_id, get_all_games
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
 
@@ -65,4 +67,70 @@ async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[d
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error: {e}"
         )
+
+@app.get('/playerPoints', response_model=List[dict])
+async def get_players_points(points: Optional[int] = Query(None, alias="points")) -> List[dict]:
+    try:
+        if points: 
+            player_info = get_players_by_points(points)  # Function to fetch a player by points
         
+        if player_info:
+            return player_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Players with listed points not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+
+# Team query routes
+
+@app.get('/teams', response_model=List[dict])
+async def get_teams(name: Optional[str] = Query(None, alias="name")) -> List[dict]:
+    try:
+        if name: 
+            team_info = get_team_by_name(name)  # Function to fetch a team by name
+        else: 
+            team_info = get_all_teams()  # Function to fetch all teams
+        
+        if team_info:
+            return team_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Team not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+
+# Game query routes
+
+@app.get('/games', response_model=List[dict])
+async def get_teams(team_id: Optional[str] = Query(None, alias="team_id")) -> List[dict]:
+    try:
+        if team_id: 
+            game_info = get_game_by_team_id(team_id)  # Function to fetch a team by name
+        else: 
+            game_info = get_all_games()  # Function to fetch all teams
+        
+        if game_info:
+            return game_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Game not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
