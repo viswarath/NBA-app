@@ -23,9 +23,9 @@ def insert_team_data_from_csv():
                 
                 # Insert into the team table
                 db.cursor.execute(f"""
-                    INSERT INTO team (team_id, div_name, div_place, conf_name, conf_place)
+                    INSERT INTO team (team_id, name, rank, wins, losses)
                     VALUES (%s, %s, %s, %s, %s);
-                """, (team_id, None, None, None, None))
+                """, (team_id, row['Name'], row['Rk'], row['W'], row['L']))
 
 
                 # Insert into the movement table (e.g., based on pace and age)
