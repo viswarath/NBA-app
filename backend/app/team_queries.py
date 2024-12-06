@@ -110,7 +110,7 @@ def get_num_road_games() -> dict:
         else:
             return None
 
-def get_teams_by_SOS(SOS: float) -> list[dict]:
+def get_teams_by_SOS(SOS: float) -> dict:
     with PgDatabase() as db:
         query = """
             SELECT team.team_id, name, rank, wins, losses, SOS

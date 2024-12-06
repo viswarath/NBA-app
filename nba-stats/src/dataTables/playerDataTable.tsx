@@ -4,6 +4,7 @@ import Paper from '@mui/material/Paper';
 import { Stack, TextField, Alert, Skeleton, Button } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 
+
 interface PlayerData {
   player_id: number;
   team_id: string; 
@@ -83,7 +84,6 @@ const PlayerDataTable: React.FC = () => {
           />
         )}
       </Paper>
-
     </Stack>
   );
 }

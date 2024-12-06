@@ -28,7 +28,7 @@ def get_player_by_name(name: str) -> dict:
         else:
             return None
 
-def get_players_by_points(points: int) -> list[dict]:
+def get_players_by_points(points: int) -> dict:
     with PgDatabase() as db:
         query = """
             SELECT player.player_id, team_id, name, age, position, games_started, (two_point*2 + three_point*3) AS total_points
@@ -57,7 +57,7 @@ def get_players_by_points(points: int) -> list[dict]:
         else:
             return None
 
-def get_players_by_assists(assists: int) -> list[dict]:
+def get_players_by_assists(assists: int) -> dict:
     with PgDatabase() as db:
         query = """
             SELECT player.player_id, team_id, name, age, position, games_started, AST as assists
@@ -86,7 +86,7 @@ def get_players_by_assists(assists: int) -> list[dict]:
         else:
             return None
 
-def get_players_by_FTPerc(FTPerc: float) -> list[dict]:
+def get_players_by_FTPerc(FTPerc: float) -> dict:
     with PgDatabase() as db:
         query = """
             SELECT player.player_id, team_id, name, age, position, games_started, FT_Perc
