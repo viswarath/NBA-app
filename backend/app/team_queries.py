@@ -109,3 +109,31 @@ def get_num_road_games() -> dict:
             return road_game_info
         else:
             return None
+
+def get_teams_by_SOS(SOS: float) -> list[dict]:
+    with PgDatabase() as db:
+        query = """
+            SELECT team.team_id, name, rank, wins, losses, SOS
+            FROM team
+            JOIN schedule_strength ON team.team_id = schedule_strength.team_id
+            WHERE SOS > %s;
+        """
+
+        db.cursor.execute(query, (SOS,))
+        result = db.cursor.fetchall()
+        
+        if result:
+            team_info = [
+                {
+                    "team_id": row[0],
+                    "name": row[1],
+                    "rank": row[2],
+                    "wins": row[3],
+                    "losses": row[4],
+                    "SOS": row[5],
+                }
+                for row in result
+            ]
+            return team_info
+        else:
+            return None
