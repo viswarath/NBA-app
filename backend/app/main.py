@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status, Query # type: ignore
+from fastapi import FastAPI, status, Query, Request # type: ignore
 from fastapi.exceptions import HTTPException  # type: ignore
 from typing import List, Optional
 from fastapi.middleware.cors import CORSMiddleware # type: ignore
@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 from app.database import create_tables, drop_tables
 from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc
-from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS
+from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS, trade_transaction, get_all_trades
 from app.game_queries import get_game_by_team_id, get_all_games, get_advanced_game_stats_by_team_id
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
@@ -175,6 +175,62 @@ async def get_teamSOS(SOS: Optional[float] = Query(0, alias="SOS")) -> List[dict
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Team SOS not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+@app.post('/tradePlayers', response_model=List[dict])
+async def trade_players(request: Request):
+    try:
+        # Parse the request body as JSON
+        body = await request.json()
+
+        # Extract and validate player IDs
+        player1_id = body.get("player1_id")
+        player2_id = body.get("player2_id")
+
+        if not isinstance(player1_id, int) or not isinstance(player2_id, int):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Both player1_id and player2_id must be valid integers."
+            )
+
+        if player1_id is None or player2_id is None:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Both player1_id and player2_id must be provided."
+            )
+
+        # Call the trade_transaction function
+        trade_info = trade_transaction(player1_id, player2_id)
+
+        if trade_info:
+            return trade_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Trade between players unable to occur"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+@app.get('/trades')
+async def get_trades() -> List[dict]:
+    try:
+        trade_info = get_all_trades()
+        
+        if trade_info:
+            return trade_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Trade information not found"
             )
     except Exception as e:
         raise HTTPException(

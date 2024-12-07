@@ -63,6 +63,7 @@ rating = "rating"
 arena = "arena"
 plays_at = "plays_at"
 games = "games"
+trades = "trades"
 
 
 
@@ -83,7 +84,8 @@ def drop_tables():
         db.cursor.execute(f"DROP TABLE IF EXISTS {player_stats} CASCADE;")
         db.cursor.execute(f"DROP TABLE IF EXISTS {award} CASCADE;")
         db.cursor.execute(f"DROP TABLE IF EXISTS {player} CASCADE;")
-        db.cursor.execute(f"DROP TABLE IF EXISTS {team} CASCADE;")    
+        db.cursor.execute(f"DROP TABLE IF EXISTS {team} CASCADE;")
+        db.cursor.execute(f"DROP TABLE IF EXISTS {trades} CASCADE;")       
            
         db.connection.commit()
         print("Tables are dropped...")
@@ -279,6 +281,20 @@ def create_tables():
                 FOREIGN KEY (strength_id) REFERENCES {schedule_strength}(strength_id),
                 FOREIGN KEY (record_id) REFERENCES {record}(record_id),
                 FOREIGN KEY (rating_id) REFERENCES {rating}(rating_id)
+            );
+        """)
+
+        # Create Trades table
+        db.cursor.execute(f"""
+            CREATE TABLE {trades} (
+                trade_id SERIAL PRIMARY KEY,
+                player1_id INT,
+                new_team1_id CHAR(3),
+                player2_id INT,
+                new_team2_id CHAR(3),
+                trade_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (player1_id) REFERENCES player(player_id),
+                FOREIGN KEY (player2_id) REFERENCES player(player_id)
             );
         """)
 
