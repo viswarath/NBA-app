@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { Box, Tabs, Tab, CircularProgress } from '@mui/material';
-import PlayerDataTable from './dataTables/playerDataTable';
+import { PlayerPage } from './PlayerPage';
+import { TeamPage } from './TeamPage';
 
 export const MainPage : React.FC = () => {
   const [value, setValue] = useState<number>(0);
@@ -44,8 +45,8 @@ export const MainPage : React.FC = () => {
         </Box>
       ) : (
         <Box sx={{ p: 3 }}>
-          {value === 0 && <PlayerDataTable/>}
-          {value === 1 && <div>Content for View 2</div>}
+          {value === 0 && <PlayerPage/>}
+          {value === 1 && <TeamPage/>}
           {value === 2 && <div>Content for View 3</div>}
         </Box>
       )}

@@ -90,7 +90,6 @@ async def get_players_points(points: Optional[int] = Query(0, alias="points")) -
 @app.get('/playerAssists', response_model=List[dict])
 async def get_players_points(assists: Optional[int] = Query(0, alias="assists")) -> List[dict]:
     try:
-        print(assists)
         player_info = get_players_by_assists(assists)  # Function to fetch a player by points
         
         if player_info:
@@ -109,9 +108,8 @@ async def get_players_points(assists: Optional[int] = Query(0, alias="assists"))
 @app.get('/playerFTPerc', response_model=List[dict])
 async def get_players_FTPerc(FTPerc: Optional[float] = Query(0, alias="FTPerc")) -> List[dict]:
     try:
-        print(FTPerc)
         player_info = get_players_by_FTPerc(FTPerc)  # Function to fetch a player by points
-        
+                
         if player_info:
             return player_info
         else:
