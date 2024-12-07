@@ -35,7 +35,6 @@ export const PlayerDataTable: React.FC = () => {
       queryFn={fetchPlayers}
       columns={playerColumns}
       label="Player Name"
-      apiUrl="http://0.0.0.0:8000/players"
       getRowId={(row) => row.player_id}  // Use `player_id` as the unique row ID
     />
   );

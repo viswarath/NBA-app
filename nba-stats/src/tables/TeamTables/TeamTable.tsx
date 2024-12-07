@@ -33,7 +33,6 @@ export const TeamDataTable: React.FC = () => {
       queryFn={fetchTeams}
       columns={teamColumns}
       label="Team Name"
-      apiUrl="http://0.0.0.0:8000/teams"
       getRowId={(row) => row.team_id}  // Use `team_id` as the unique row ID
     />
   );

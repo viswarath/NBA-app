@@ -9,11 +9,10 @@ interface DataTableProps<T> {
   queryFn: (searchParam: string) => Promise<T[]>;
   columns: GridColDef[];
   label: string;
-  apiUrl: string;
   getRowId: (row: T) => string | number;
 }
 
-export function DataTable<T>({ queryKey, queryFn, columns, label, apiUrl, getRowId }: DataTableProps<T>) {
+export function DataTable<T>({ queryKey, queryFn, columns, label, getRowId }: DataTableProps<T>) {
   const [searchParam, setSearchParam] = React.useState<string>('');
 
   const { isLoading, isError, data, error } = useQuery<T[], Error>({
