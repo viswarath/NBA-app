@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 from app.database import create_tables, drop_tables
 from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc
 from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS
-from app.game_queries import get_game_by_team_id, get_all_games
+from app.game_queries import get_game_by_team_id, get_all_games, get_advanced_game_stats_by_team_id
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
 app = FastAPI()
 
@@ -218,6 +218,24 @@ async def get_road_games() -> List[dict]:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Game not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+@app.get('/advancedGameStat', response_model=List[dict])
+async def get_teams(team_id: Optional[str] = Query('', alias="team_id")) -> List[dict]:
+    try:
+        game_info = get_advanced_game_stats_by_team_id(team_id)  # Function to fetch a team by name
+        
+        if game_info:
+            return game_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Game data not found"
             )
     except Exception as e:
         raise HTTPException(
