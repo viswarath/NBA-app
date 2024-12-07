@@ -78,7 +78,7 @@ def get_advanced_game_stats_by_team_id(home_team_id: str) -> dict:
               JOIN schedule_strength ssat ON ssat.team_id = at.team_id
               JOIN plays_at pa ON ht.team_id = pa.team_id
               JOIN arena a ON pa.arena_name = a.arena_name
-              WHERE (%s = '' OR ht.name ILIKE %s OR at.name ILIKE %s)
+              WHERE (%s = '' OR ht.team_id ILIKE %s OR at.team_id ILIKE %s)
               ORDER BY g.game_date;
 
         """
