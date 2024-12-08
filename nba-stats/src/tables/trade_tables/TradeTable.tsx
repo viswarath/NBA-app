@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { GridColDef } from '@mui/x-data-grid';
-import { DataTable } from '../DefaultTable';  // Import the abstracted DataTable component
+import { DataTable } from '../DefaultTable';  
 
 interface TradeData {
   trade_id: string;
@@ -20,7 +20,6 @@ const tradeColumns: GridColDef[] = [
   { field: 'trade_date', headerName: 'Trade Date', width: 200 },
 ];
 
-// Fetch trades from the API
 const fetchTrades = async () => {
   const response = await fetch('http://0.0.0.0:8000/trades');
   if (!response.ok) {
@@ -30,7 +29,7 @@ const fetchTrades = async () => {
 };
 
 interface TradeDataTableProps {
-  key: number; // Adding key prop to trigger re-render
+  key: number; 
 }
 
 export const TradeDataTable: React.FC<TradeDataTableProps> = ({ key }) => {

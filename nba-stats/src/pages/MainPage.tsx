@@ -23,7 +23,6 @@ export const MainPage : React.FC = () => {
       if (!response.ok) {
         throw new Error('Failed to initialize database');
       }
-
       return response.json();
     },
   });

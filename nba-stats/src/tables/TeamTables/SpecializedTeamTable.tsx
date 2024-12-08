@@ -9,9 +9,9 @@ interface SpecializedTeamData {
   rank: string;
   wins: number;
   losses: number;
-  awards?: number;  // Award count, if filtering by awards
-  SOS?: number;     // Strength of Schedule, if filtering by SOS
-  num_road_games?: number; // Number of road games, if filtering by road games
+  awards?: number;  
+  SOS?: number;     
+  num_road_games?: number; 
 }
 
 export const SpecializedTeamTable: React.FC = () => {
@@ -49,13 +49,13 @@ export const SpecializedTeamTable: React.FC = () => {
       return response.json();
     },
     retry: 1,
-    enabled: filterType !== null && (filterType !== 'Team SOS' || SOSValue !== null), // Ensure SOS filter is enabled only when needed
+    enabled: filterType !== null && (filterType !== 'Team SOS' || SOSValue !== null), 
   });
 
   const handleFilterClick = (type: 'Team Awards' | 'Team SOS' | 'Road Games') => {
     setFilterType(type);
     if (type === 'Team SOS') {
-      setSOSValue(null); // Reset SOS value if switching to SOS filter
+      setSOSValue(null); 
     }
   };
 
@@ -63,7 +63,6 @@ export const SpecializedTeamTable: React.FC = () => {
     setSOSValue(Number(event.target.value));
   };
 
-  // Dynamic column definition based on filter type
   const columns: GridColDef[] = [
     { field: 'team_id', headerName: 'Team ID', width: 150 },
     { field: 'name', headerName: 'Name', width: 200 },
@@ -77,7 +76,6 @@ export const SpecializedTeamTable: React.FC = () => {
     },
   ];
 
-  // Dynamic row mapping based on filterType
   const rows = data?.map((team) => ({
     id: team.team_id,
     team_id: team.team_id,

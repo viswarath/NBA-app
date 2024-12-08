@@ -35,8 +35,8 @@ export const PlayerDataTable: React.FC = () => {
       queryFn={fetchPlayers}
       columns={playerColumns}
       label="Player Name"
-      getRowId={(row) => row.player_id}  // Use `player_id` as the unique row ID
-      
+      getRowId={(row) => row.player_id}  
+
     />
   );
 };
