@@ -8,17 +8,13 @@ csv_schedule_path = "schedule.csv"
 
 import csv
 
-# Function to insert team data from CSV
 def insert_team_data_from_csv():
-    
-    # Connect to the database
     with PgDatabase() as db:
         count = 0  # This will be used to generate unique IDs
         with open(csv_teams_path, 'r', newline='', encoding='utf-8') as file:
             csv_reader = csv.DictReader(file) 
             
             for row in csv_reader:
-                print(count)
                 team_id = row['Team'] 
                 
                 # Insert into the team table
@@ -98,7 +94,7 @@ def insert_team_data_from_csv():
                 """, (arena_name, team_id))
 
                 count += 1
-            
+        print("Team data inserted successfully.") 
         db.connection.commit()
 
 
@@ -121,6 +117,7 @@ def insert_game_data_from_csv():
                     VALUES (%s, %s, %s, %s, %s)
                 """, (home_team_id, away_team_id, game_id, game_date, preview_url))
         
+        print("Game Data inserted successfully.")
         db.connection.commit()
 
 
@@ -132,9 +129,7 @@ def insert_player_data_from_csv():
         with open(csv_players_path, 'r', newline='', encoding='utf-8') as file:
             reader = csv.DictReader(file, delimiter=';')
 
-            # Iterate through each row (player data) in the CSV
             for row in reader:
-                # Extract player data from the row
                 player_id = count
                 name = row['Player']
                 position = row['Pos']
@@ -208,14 +203,12 @@ def insert_player_data_from_csv():
                     ON CONFLICT (player_id) DO NOTHING
                 """, (player_id, games_played, minutes_played, player_id, player_id, player_id))
 
-        # Commit the changes to the database
         db.connection.commit()
         print("Player data inserted successfully.")
 
 
 
 def insert_award_data():
-    # Award data
     awards = [
         ("Most Valuable Player (Michael Jordan Trophy)", 163),
         ("Rookie of the Year (Wilt Chamberlain Trophy)", 25),
@@ -226,14 +219,12 @@ def insert_award_data():
         ("NBA Hustle Award", 510)
     ]
     
-    # Connect to the database
     with PgDatabase() as db:
         for award_name, player_id in awards:
-            # Insert each award into the table, leaving player_id as NULL for now
             db.cursor.execute(f"""
                 INSERT INTO award (name, player_id)
                 VALUES (%s, %s);
             """, (award_name,player_id))
         
-        # Commit the transaction
+        print("Award data inserted successfully.")
         db.connection.commit()

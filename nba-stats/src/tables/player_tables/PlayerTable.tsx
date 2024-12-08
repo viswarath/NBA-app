@@ -36,6 +36,7 @@ export const PlayerDataTable: React.FC = () => {
       columns={playerColumns}
       label="Player Name"
       getRowId={(row) => row.player_id}  // Use `player_id` as the unique row ID
+      
     />
   );
 };

@@ -27,7 +27,7 @@ const tradePlayers = async (tradeData: { player1_id: number, player2_id: number 
   return response.json();
 };
 
-export const TradePage: React.FC = () => {
+const TradePage: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [player1Id, setPlayer1Id] = useState<number | string>('');
   const [player2Id, setPlayer2Id] = useState<number | string>('');
@@ -143,3 +143,7 @@ export const TradePage: React.FC = () => {
     </Stack>
   );
 };
+
+
+
+export default TradePage;

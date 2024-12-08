@@ -49,7 +49,7 @@ export function DataTable<T>({
 
   return (
     <Stack spacing={2}>
-      {disabledSearch && (
+      {!disabledSearch && (
         <TextField
           id="search-input"
           label={label}

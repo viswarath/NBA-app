@@ -1,10 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { Box, Tabs, Tab, CircularProgress } from '@mui/material';
-import { PlayerPage } from './PlayerPage';
-import { TeamPage } from './TeamPage';
-import { GamePage } from './GamePage';
-import { TradePage } from './TradePage';
+import PlayerPage  from './PlayerPage';
+import TeamPage  from './TeamPage';
+import GamePage from './GamePage';
+import TradePage from './TradePage';
+import EditPage from './EditPage';
 
 export const MainPage : React.FC = () => {
   const [value, setValue] = useState<number>(0);
@@ -39,6 +40,7 @@ export const MainPage : React.FC = () => {
         <Tab label="Team Table" />
         <Tab label="Game Table" />
         <Tab label="Trade Page" />
+        <Tab label="Edit Page" />
       </Tabs>
 
       {isPending ? (
@@ -51,7 +53,7 @@ export const MainPage : React.FC = () => {
           {value === 1 && <TeamPage/>}
           {value === 2 && <GamePage/>}
           {value === 3 && <TradePage/>}
-
+          {value === 4 && <EditPage />}
         </Box>
       )}
     </Box>

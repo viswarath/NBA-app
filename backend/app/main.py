@@ -34,7 +34,6 @@ async def index():
 async def initdb():
     try:
         drop_tables()
-        print("Done")
         create_tables()
         insert_team_data_from_csv()
         insert_game_data_from_csv()

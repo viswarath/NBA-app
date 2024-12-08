@@ -3,7 +3,7 @@ import { Stack } from '@mui/material';
 import React from 'react'
 import { GameDataTable } from '../tables/game_tables/GameTable';
 
-export const GamePage : React.FC = () => {
+const GamePage : React.FC = () => {
     return(
         <Stack spacing={3}>
             <GameDataTable/>
@@ -12,3 +12,5 @@ export const GamePage : React.FC = () => {
 }
 
 
+
+export default GamePage;
