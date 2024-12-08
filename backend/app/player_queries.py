@@ -140,3 +140,130 @@ def get_all_players() -> dict:
             return players_info
         else:
             return None
+
+# insertion of player
+
+def insert_player_row(team_id:str, name: str, age: int, position: str, games_started: int) -> dict:
+    with PgDatabase() as db:
+        try:
+            # Begin the transaction
+            db.cursor.execute("BEGIN;")
+
+            count_query = "SELECT COUNT(*) FROM player;"
+            db.cursor.execute(count_query)
+            result = db.cursor.fetchone()
+
+            if result is None or len(result) == 0:
+                raise Exception("Failed to fetch the player count.")
+            
+            player_count = result[0]
+            
+            # player ids are 0 indexed
+            player_id = player_count
+
+            # Insert the new player into the player table
+            insert_query = """
+                INSERT INTO player (player_id, team_id, name, age, position, games_started)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """
+            db.cursor.execute(insert_query, (player_id, team_id, name, age, position, games_started))
+
+            # fetch the same player through a query to confirm it
+            select_player_query = """
+                SELECT * 
+                FROM player
+                WHERE player_id = %s;
+            """
+            db.cursor.execute(select_player_query, (player_id,))
+            result = db.cursor.fetchall()
+
+            db.cursor.execute("COMMIT;")
+
+            if result:
+                insert_player_info = [
+                    {
+                        "player_id": row[0],
+                        "team_id": row[1],
+                        "name": row[2],
+                        "age": row[3],
+                        "position": row[4],
+                        "games_started": row[5],
+                    }
+                    for row in result
+                ]
+                return insert_player_info
+            else:
+                return None
+
+        except Exception as e:
+            db.cursor.execute("ROLLBACK;")
+            raise Exception(f"Error inserting player: {e}")
+
+# insertion of player
+
+def update_player_row(player_id:int, team_id:str, name: str, age: int, position: str, games_started: int) -> dict:
+    with PgDatabase() as db:
+        try:
+            # Begin the transaction
+            db.cursor.execute("BEGIN;")
+
+            # Insert the new player into the player table
+            update_player_query = """
+                UPDATE player
+                SET team_id = %s, name = %s, age = %s, position = %s, games_started = %s
+                WHERE player_id = %s;
+            """
+            db.cursor.execute(update_player_query, (team_id, name, age, position, games_started, player_id,))
+
+            # fetch the same player through a query to confirm it
+            select_player_query = """
+                SELECT * 
+                FROM player
+                WHERE player_id = %s;
+            """
+            db.cursor.execute(select_player_query, (player_id,))
+            result = db.cursor.fetchall()
+
+            db.cursor.execute("COMMIT;")
+
+            if result:
+                update_player_info = [
+                    {
+                        "player_id": row[0],
+                        "team_id": row[1],
+                        "name": row[2],
+                        "age": row[3],
+                        "position": row[4],
+                        "games_started": row[5],
+                    }
+                    for row in result
+                ]
+                return update_player_info
+            else:
+                return None
+
+        except Exception as e:
+            db.cursor.execute("ROLLBACK;")
+            raise Exception(f"Error updating player: {e}")
+
+# Deletion of player
+def delete_player_row(player_id:int) -> dict:
+    with PgDatabase() as db:
+        try:
+            # Begin the transaction
+            db.cursor.execute("BEGIN;")
+
+            # The delete will cascade to the statistical tables
+            delete_player_query = """
+                DELETE 
+                FROM player
+                WHERE player_id = %s;
+            """
+            db.cursor.execute(delete_player_query, (player_id,))
+
+            db.cursor.execute("COMMIT;")
+            return []
+
+        except Exception as e:
+            db.cursor.execute("ROLLBACK;")
+            raise Exception(f"Error deleting player: {e}")

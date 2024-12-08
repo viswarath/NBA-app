@@ -253,17 +253,17 @@ def create_tables():
         
         # Create Player_Stats table
         db.cursor.execute(f"""
-            CREATE TABLE {player_stats} (
+            CREATE TABLE player_stats (
                 player_id INT PRIMARY KEY,
                 games_played INT,
                 mins_played INT,
                 free_throw_stats_id INT,
                 shoot_stats_id INT,
                 other_stats_id INT,
-                FOREIGN KEY (player_id) REFERENCES {player}(player_id),
-                FOREIGN KEY (free_throw_stats_id) REFERENCES {free_throw_stats}(free_throw_stats_id),
-                FOREIGN KEY (shoot_stats_id) REFERENCES {shoot_stats}(shoot_stats_id),
-                FOREIGN KEY (other_stats_id) REFERENCES {other_stats}(other_stats_id)
+                FOREIGN KEY (player_id) REFERENCES {player}(player_id) ON DELETE CASCADE,
+                FOREIGN KEY (free_throw_stats_id) REFERENCES {free_throw_stats}(free_throw_stats_id) ON DELETE CASCADE,
+                FOREIGN KEY (shoot_stats_id) REFERENCES {shoot_stats}(shoot_stats_id) ON DELETE CASCADE,
+                FOREIGN KEY (other_stats_id) REFERENCES {other_stats}(other_stats_id) ON DELETE CASCADE
             );
         """)
 
@@ -293,8 +293,8 @@ def create_tables():
                 player2_id INT,
                 new_team2_id CHAR(3),
                 trade_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (player1_id) REFERENCES player(player_id),
-                FOREIGN KEY (player2_id) REFERENCES player(player_id)
+                FOREIGN KEY (player1_id) REFERENCES {player}(player_id),
+                FOREIGN KEY (player2_id) REFERENCES {player}(player_id)
             );
         """)
 
