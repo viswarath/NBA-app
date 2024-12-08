@@ -298,5 +298,17 @@ def create_tables():
             );
         """)
 
+        # Create indexes
+        db.cursor.execute(f"""
+            CREATE INDEX idx_player_name
+            ON player (name);
+        """)
+
+        # Create indexes
+        db.cursor.execute(f"""
+            CREATE INDEX idx_team_name
+            ON team (name);
+        """)
+
         db.connection.commit()
         print("Tables are created successfully...")
