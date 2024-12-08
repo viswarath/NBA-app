@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 
 from app.database import create_tables, drop_tables
-from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc, insert_player_row, update_player_row
+from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc, insert_player_row, update_player_row, delete_player_row
 from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS, trade_transaction, get_all_trades
 from app.game_queries import get_game_by_team_id, get_all_games, get_advanced_game_stats_by_team_id
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
@@ -175,6 +175,31 @@ async def update_player(request: Request):
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="player update info not found"
+            )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {e}"
+        )
+
+# Player deletion
+@app.delete('/deletePlayer', response_model=List[dict])
+async def update_player(request: Request):
+    try:
+        # Parse the request body as JSON
+        body = await request.json()
+
+        # Extract player_id
+        player_id = body.get("player_id")
+
+        delete_player_info = delete_player_row(player_id)
+
+        if not delete_player_info:
+            return delete_player_info
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="player deletion failed"
             )
     except Exception as e:
         raise HTTPException(

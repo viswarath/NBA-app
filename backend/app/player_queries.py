@@ -245,3 +245,25 @@ def update_player_row(player_id:int, team_id:str, name: str, age: int, position:
         except Exception as e:
             db.cursor.execute("ROLLBACK;")
             raise Exception(f"Error updating player: {e}")
+
+# Deletion of player
+def delete_player_row(player_id:int) -> dict:
+    with PgDatabase() as db:
+        try:
+            # Begin the transaction
+            db.cursor.execute("BEGIN;")
+
+            # The delete will cascade to the statistical tables
+            delete_player_query = """
+                DELETE 
+                FROM player
+                WHERE player_id = %s;
+            """
+            db.cursor.execute(delete_player_query, (player_id,))
+
+            db.cursor.execute("COMMIT;")
+            return []
+
+        except Exception as e:
+            db.cursor.execute("ROLLBACK;")
+            raise Exception(f"Error deleting player: {e}")
