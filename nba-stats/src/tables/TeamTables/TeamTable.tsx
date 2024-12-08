@@ -33,7 +33,7 @@ export const TeamDataTable: React.FC = () => {
       queryFn={fetchTeams}
       columns={teamColumns}
       label="Team Name"
-      getRowId={(row) => row.team_id}  // Use `team_id` as the unique row ID
+      getRowId={(row) => row.team_id}
     />
   );
 };

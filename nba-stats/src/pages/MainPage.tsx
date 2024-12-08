@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Box, Tabs, Tab, CircularProgress } from '@mui/material';
 import { PlayerPage } from './PlayerPage';
 import { TeamPage } from './TeamPage';
+import { GamePage } from './GamePage';
+import { TradePage } from './TradePage';
 
 export const MainPage : React.FC = () => {
   const [value, setValue] = useState<number>(0);
@@ -17,7 +19,6 @@ export const MainPage : React.FC = () => {
       const response = await fetch('http://0.0.0.0:8000/initdb', {
         method: 'POST'
       });
-
       if (!response.ok) {
         throw new Error('Failed to initialize database');
       }
@@ -37,6 +38,7 @@ export const MainPage : React.FC = () => {
         <Tab label="Player Table" />
         <Tab label="Team Table" />
         <Tab label="Game Table" />
+        <Tab label="Trade Page" />
       </Tabs>
 
       {isPending ? (
@@ -47,7 +49,9 @@ export const MainPage : React.FC = () => {
         <Box sx={{ p: 3 }}>
           {value === 0 && <PlayerPage/>}
           {value === 1 && <TeamPage/>}
-          {value === 2 && <div>Content for View 3</div>}
+          {value === 2 && <GamePage/>}
+          {value === 3 && <TradePage/>}
+
         </Box>
       )}
     </Box>

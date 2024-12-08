@@ -66,7 +66,8 @@ def get_advanced_game_stats_by_team_id(home_team_id: str) -> dict:
                   ratingat.ORTG AS away_team_ORTG,
                   a.arena_name AS game_arena,
                   a.arena_attend_game AS arena_attendance,
-                  g.link
+                  g.link,
+                  g.game_id
               FROM games g
               JOIN team ht ON g.home_team_id = ht.team_id
               JOIN team at ON g.away_team_id = at.team_id
@@ -101,6 +102,7 @@ def get_advanced_game_stats_by_team_id(home_team_id: str) -> dict:
                     "arena_name": row[9],
                     "arena_attendance": row[10],
                     "link": row[11],
+                    "game_id": row[12]
                 }
                 for row in result
             ]
