@@ -39,8 +39,8 @@ const advancedColumns: GridColDef[] = [
 
 const fetchGameData = async (team_id: string, isAdvanced: boolean) => {
   const endpoint = isAdvanced
-    ? `http://0.0.0.0:8000/advancedGameStat?team_id=${team_id}`
-    : `http://0.0.0.0:8000/games?team_id=${team_id}`;
+    ? `http://0.0.0.0:8000/advancedGameStat`
+    : `http://0.0.0.0:8000/games`;
   
   const response = await fetch(endpoint);
   if (!response.ok) {
@@ -65,6 +65,7 @@ export const GameDataTable: React.FC = () => {
         columns={isAdvanced ? advancedColumns : normalColumns}
         label="Team ID"
         getRowId={(row) => row.game_id}
+        disabledSearch={true}
       />
       <Button variant="contained" onClick={handleToggle}>
         {isAdvanced ? 'Switch to Games' : 'Switch to Advanced Stats'}
