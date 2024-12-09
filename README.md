@@ -94,3 +94,26 @@ yarn start
 Open your browser (GOOGLE CHROME) and navigate to `http://localhost:3000` to access the frontend
 
 
+---
+
+## Developer Notes:
+To restart the server and create every table again with orginal data from csv: 
+Add: 
+```
+@app.post('/restart')
+async def initdb():
+    try:
+        drop_tables()
+        create_tables()
+        insert_team_data_from_csv()
+        insert_game_data_from_csv()
+        insert_player_data_from_csv()
+        insert_award_data()
+        return {"message": "Tables ; and created!"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error {e}"
+        )
+```
+to `main.py` on the backend. Curl to this `http://0.0.0.0:8000/restart` to restart database!
