@@ -70,4 +70,27 @@ python3 -m venv venv
 source venv/bin/activate 
 ```
 - Run `pip install -r requirements.txt` fastapi and uvicorn
-  
+
+---
+
+## Run Instructions: 
+
+### Backend: 
+To start the backend server, run the following command:
+```
+cd backend/
+uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+```
+The backend will now be accessible at `http://localhost:8000`
+
+
+### Frontend:
+To start the frontend development server, run:
+
+```
+cd nba-stats/
+yarn start
+```
+Open your browser (GOOGLE CHROME) and navigate to `http://localhost:3000` to access the frontend
+
+
