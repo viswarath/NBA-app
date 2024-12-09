@@ -56,9 +56,9 @@ async def initdb():
 async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[dict]:
     try:
         if name: 
-            player_info = get_player_by_name(name)  # Function to fetch a player by name
+            player_info = get_player_by_name(name) 
         else: 
-            player_info = get_all_players()  # Function to fetch all players
+            player_info = get_all_players() 
         
         if player_info:
             return player_info
@@ -77,7 +77,7 @@ async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[d
 async def get_players_points(points: Optional[int] = Query(0, alias="points")) -> List[dict]:
     try:
         
-        player_info = get_players_by_points(points)  # Function to fetch a player by points
+        player_info = get_players_by_points(points) 
         
         if player_info:
             return player_info
@@ -95,7 +95,7 @@ async def get_players_points(points: Optional[int] = Query(0, alias="points")) -
 @app.get('/playerAssists', response_model=List[dict])
 async def get_players_points(assists: Optional[int] = Query(0, alias="assists")) -> List[dict]:
     try:
-        player_info = get_players_by_assists(assists)  # Function to fetch a player by points
+        player_info = get_players_by_assists(assists) 
         
         if player_info:
             return player_info
@@ -113,7 +113,7 @@ async def get_players_points(assists: Optional[int] = Query(0, alias="assists"))
 @app.get('/playerFTPerc', response_model=List[dict])
 async def get_players_FTPerc(FTPerc: Optional[float] = Query(0, alias="FTPerc")) -> List[dict]:
     try:
-        player_info = get_players_by_FTPerc(FTPerc)  # Function to fetch a player by points
+        player_info = get_players_by_FTPerc(FTPerc)
                 
         if player_info:
             return player_info
@@ -242,9 +242,9 @@ async def update_player(request: Request):
 async def get_teams(name: Optional[str] = Query(None, alias="name")) -> List[dict]:
     try:
         if name: 
-            team_info = get_team_by_name(name)  # Function to fetch a team by name
+            team_info = get_team_by_name(name)  
         else: 
-            team_info = get_all_teams()  # Function to fetch all teams
+            team_info = get_all_teams() 
         
         if team_info:
             return team_info
@@ -387,7 +387,7 @@ async def get_road_games() -> List[dict]:
 @app.get('/advancedGameStat', response_model=List[dict])
 async def get_teams(team_id: Optional[str] = Query('', alias="team_id")) -> List[dict]:
     try:
-        game_info = get_advanced_game_stats_by_team_id(team_id)  # Function to fetch a team by name
+        game_info = get_advanced_game_stats_by_team_id(team_id) 
         
         if game_info:
             return game_info
