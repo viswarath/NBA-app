@@ -1,3 +1,4 @@
+import inspect
 from fastapi import FastAPI, status, Query, Request # type: ignore
 from fastapi.exceptions import HTTPException  # type: ignore
 from typing import List, Optional
@@ -5,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore
 
 
 from app.database import create_tables, drop_tables
+
 from app.player_queries import get_player_by_name, get_all_players, get_players_by_points, get_players_by_assists, get_players_by_FTPerc, insert_player_row, update_player_row, delete_player_row
 from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS, trade_transaction, get_all_trades
 from app.game_queries import get_game_by_team_id, get_all_games, get_advanced_game_stats_by_team_id
@@ -34,6 +36,9 @@ async def index():
 @app.post('/initdb')
 async def initdb():
     try:
+        if get_all_players():
+            print("Tables are alreayd created!")
+            return {"message": "Tables already exist. Initialization skipped."}
         drop_tables()
         create_tables()
         insert_team_data_from_csv()
