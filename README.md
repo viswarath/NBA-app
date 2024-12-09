@@ -97,7 +97,7 @@ Open your browser (GOOGLE CHROME) and navigate to `http://localhost:3000` to acc
 ---
 
 ## Developer Notes:
-To restart the server and create every table again with orginal data from csv: 
+To restart the server and create every table again with orginal data from csv,
 Add: 
 ```
 @app.post('/restart')
