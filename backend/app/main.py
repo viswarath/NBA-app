@@ -37,7 +37,7 @@ async def index():
 async def initdb():
     try:
         if get_all_players():
-            print("Tables are alreayd created!")
+            print("Tables are already created!")
             return {"message": "Tables already exist. Initialization skipped."}
         drop_tables()
         create_tables()
