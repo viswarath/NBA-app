@@ -27,12 +27,19 @@ const EditPage: React.FC = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ team_id: teamId, name, age, position, games_started: gamesStarted }),
             });
-            if (!response.ok) throw new Error('Error inserting player');
+    
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => response.text());
+                const errorMessage = errorBody.detail || 'Error inserting player';
+                throw new Error(errorMessage);
+            }
+    
             return response.json();
         },
         onSuccess: (data) => setMessage(`Player inserted successfully: ${JSON.stringify(data)}`),
-        onError: (error) => setMessage(`Error: ${error.message}`),
+        onError: (error) => setMessage(`${error.message}`),
     });
+    
 
     const { mutate: updatePlayerMutation, isPending: isUpdating } = useMutation({
         mutationKey: ['updatePlayer'],
@@ -42,12 +49,19 @@ const EditPage: React.FC = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ player_id: playerId, team_id: teamId, name, age, position, games_started: gamesStarted }),
             });
-            if (!response.ok) throw new Error('Error updating player');
+    
+            if (!response.ok) {
+                const errorBody = await response.json().catch(() => response.text());
+                const errorMessage = errorBody.detail || 'Error updating player';
+                throw new Error(errorMessage);
+            }
+    
             return response.json();
         },
         onSuccess: (data) => setMessage(`Player updated successfully: ${JSON.stringify(data)}`),
-        onError: (error) => setMessage(`Error: ${error.message}`),
+        onError: (error) => setMessage(`${error.message}`),
     });
+    
 
     const { mutate: deletePlayerMutation, isPending: isDeleting } = useMutation({
         mutationKey: ['deletePlayer'],
