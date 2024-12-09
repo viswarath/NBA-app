@@ -16,7 +16,7 @@ interface SpecializedTeamData {
 
 export const SpecializedTeamTable: React.FC = () => {
   const [filterType, setFilterType] = useState<'Team Awards' | 'Team SOS' | 'Road Games' | null>(null);
-  const [SOSValue, setSOSValue] = useState<number | null>(null); // For SOS filter
+  const [SOSValue, setSOSValue] = useState<number | null>(null); 
   
   const { isLoading, isError, data, error } = useQuery<SpecializedTeamData[], Error>({
     queryKey: ['teams', filterType, SOSValue],

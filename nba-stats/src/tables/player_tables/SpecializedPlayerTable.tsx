@@ -112,7 +112,7 @@ export const SpecializedPlayerTable: React.FC = () => {
         type="number"
         value={statValue ?? ''}
         onChange={handleStatChange}
-        disabled={filterType === null} // Disable input if no filter is selected
+        disabled={filterType === null}
       />
       
       {isError && <Alert severity="error">Error: {error?.message}</Alert>}
