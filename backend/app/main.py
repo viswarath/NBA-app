@@ -9,6 +9,7 @@ from app.player_queries import get_player_by_name, get_all_players, get_players_
 from app.team_queries import get_team_by_name, get_all_teams, get_num_team_awards, get_num_road_games, get_teams_by_SOS, trade_transaction, get_all_trades
 from app.game_queries import get_game_by_team_id, get_all_games, get_advanced_game_stats_by_team_id
 from app.csv_parser import insert_player_data_from_csv, insert_team_data_from_csv, insert_game_data_from_csv, insert_award_data
+from app.player_validation import is_valid_team_id, is_valid_age, is_valid_position, is_valid_games_started, is_valid_player_name
 app = FastAPI()
 
 origins = [
@@ -136,6 +137,19 @@ async def insert_player(request: Request):
         position = body.get("position")
         games_started = body.get("games_started")
 
+        # Validate fields
+        try:
+            is_valid_team_id(team_id)
+            is_valid_player_name(name)
+            is_valid_age(age)
+            is_valid_position(position)
+            is_valid_games_started(games_started)
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
+
         insert_info = insert_player_row(team_id, name, age, position, games_started)
 
         if insert_info:
@@ -155,10 +169,8 @@ async def insert_player(request: Request):
 @app.put('/updatePlayer', response_model=List[dict])
 async def update_player(request: Request):
     try:
-        # Parse the request body as JSON
         body = await request.json()
 
-        # Extract player info
         player_id = body.get("player_id")
         team_id = body.get("team_id")
         name = body.get("name")
@@ -166,6 +178,19 @@ async def update_player(request: Request):
         position = body.get("position")
         games_started = body.get("games_started")
 
+        # Validate fields
+        try:
+            is_valid_team_id(team_id)
+            is_valid_player_name(name)
+            is_valid_age(age)
+            is_valid_position(position)
+            is_valid_games_started(games_started)
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(e)
+            )
+        
         update_player_info = update_player_row(player_id, team_id, name, age, position, games_started)
 
         if update_player_info:
@@ -306,13 +331,12 @@ async def trade_players(request: Request):
 async def get_trades() -> List[dict]:
     try:
         trade_info = get_all_trades()
-        
-        if trade_info:
+        if not trade_info:
             return trade_info
         else:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Trade information not found"
+                detail="Error in trade_info"
             )
     except Exception as e:
         raise HTTPException(
@@ -326,9 +350,9 @@ async def get_trades() -> List[dict]:
 async def get_teams(team_id: Optional[str] = Query(None, alias="team_id")) -> List[dict]:
     try:
         if team_id: 
-            game_info = get_game_by_team_id(team_id)  # Function to fetch a team by name
+            game_info = get_game_by_team_id(team_id)
         else: 
-            game_info = get_all_games()  # Function to fetch all teams
+            game_info = get_all_games()
         
         if game_info:
             return game_info

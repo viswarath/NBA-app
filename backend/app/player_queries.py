@@ -149,17 +149,19 @@ def insert_player_row(team_id:str, name: str, age: int, position: str, games_sta
             # Begin the transaction
             db.cursor.execute("BEGIN;")
 
-            count_query = "SELECT COUNT(*) FROM player;"
-            db.cursor.execute(count_query)
+            # Fetch the maximum player_id
+            # COALESCE is -1 if table is empty
+            max_id_query = "SELECT COALESCE(MAX(player_id), -1) FROM player;"
+            db.cursor.execute(max_id_query)
             result = db.cursor.fetchone()
 
             if result is None or len(result) == 0:
-                raise Exception("Failed to fetch the player count.")
+                raise Exception("Failed to fetch the maximum player_id.")
             
-            player_count = result[0]
-            
-            # player ids are 0 indexed
-            player_id = player_count
+            max_player_id = result[0]
+
+            # Assign the new player_id as max_player_id + 1
+            player_id = max_player_id + 1
 
             # Insert the new player into the player table
             insert_query = """
