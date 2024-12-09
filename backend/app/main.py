@@ -331,13 +331,7 @@ async def trade_players(request: Request):
 async def get_trades() -> List[dict]:
     try:
         trade_info = get_all_trades()
-        if not trade_info:
-            return trade_info
-        else:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Error in trade_info"
-            )
+        return trade_info
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
