@@ -172,10 +172,10 @@ async def update_player(request: Request):
         body = await request.json()
 
         player_id = body.get("player_id")
-        team_id = body.get("team_id")
-        name = body.get("name")
+        team_id = body.get("team_id").strip()
+        name = body.get("name").strip()
         age = body.get("age")
-        position = body.get("position")
+        position = body.get("position").strip()
         games_started = body.get("games_started")
 
         # Validate fields
