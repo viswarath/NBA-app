@@ -306,7 +306,6 @@ def create_tables():
 
         db.cursor.execute(f"""
             CREATE INDEX idx_games_game_date ON games(game_date);
-
         """)
         db.connection.commit()
         print("Tables are created successfully...")

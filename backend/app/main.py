@@ -52,6 +52,23 @@ async def initdb():
             detail=f"Error {e}"
         )
 
+@app.get('/restart')
+async def restart():
+    try:
+        drop_tables()
+        create_tables()
+        insert_team_data_from_csv()
+        insert_game_data_from_csv()
+        insert_player_data_from_csv()
+        insert_award_data()
+        return {"message": "Tables ; and created!"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error {e}"
+        )
+
+
 @app.get('/players', response_model=List[dict])
 async def get_players(name: Optional[str] = Query(None, alias="name")) -> List[dict]:
     try:
